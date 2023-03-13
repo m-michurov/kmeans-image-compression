@@ -1,4 +1,4 @@
-# K-means++ for Image Compression Demo
+# K-means++ for Image Quantization Demo
 
 This program uses k-means++ to compress image color space.
 When possible, image will be saved with 8-bit color using 
@@ -12,7 +12,7 @@ sizes due to compression applied when saving in given format.
 
 ## Usage
 
-    Usage: compress.py [OPTIONS] IMAGE_PATH
+    Usage: quantize.py [OPTIONS] IMAGE_PATH
     
     Options:
       --bpp INTEGER           Must be in range [1, 8]  [required]
@@ -30,7 +30,7 @@ Input:
 
 Compress using:
 ```bash
-py compress.py radio.png --bpp 6 --random-state=42
+py quantize.py radio.png --bpp 6 --random-state=42
 ```
 
 Output:

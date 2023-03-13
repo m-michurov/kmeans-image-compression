@@ -18,7 +18,7 @@ def make_palette(color_space: np.ndarray) -> list[int]:
     return palette
 
 
-def compress(
+def quantize(
         image: Any,
         target_bpp: int,
         random_state: int | None = None
@@ -73,7 +73,7 @@ def main(
         out = Path(f'{image_path.stem}-{2 ** bpp}{image_path.suffix}')
 
     with Image.open(image_path).convert('RGB') as source_image:
-        with compress(source_image, bpp, random_state) as compressed_image:
+        with quantize(source_image, bpp, random_state) as compressed_image:
             try:
                 compressed_image.save(out)
             except OSError:
