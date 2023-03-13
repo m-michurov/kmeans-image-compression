@@ -1,9 +1,13 @@
 # K-means++ for Image Compression Demo
 
-This program uses k-means++ to reduce number of colors used in
-image.
-This can lead to image size reduction when using lossless formats
-(such as `.png`).
+This program uses k-means++ to compress image color space.
+When possible, image will be saved with 8-bit color using 
+computed color clusters as color palette.
+
+Although supported bpp values are form 1 to 8,
+resulting image will always have at least 8bpp. Still, lower
+bpp values (smaller color space) can lead to lower image 
+sizes due to compression applied when saving in given format.
 
 
 ## Usage
