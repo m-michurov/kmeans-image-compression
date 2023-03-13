@@ -7,11 +7,14 @@ This can lead to image size reduction when using lossless formats
 
 
 ## Usage
-    Usage: compress.py [OPTIONS] IMAGE_PATH N_COLORS
+
+    Usage: compress.py [OPTIONS] IMAGE_PATH
     
     Options:
+      --bpp INTEGER           Must be in range [1, 8]  [required]
       --out PATH
-      --help      Show this message and exit.
+      --random-state INTEGER
+      --help                  Show this message and exit.
 
 ## Example
 
@@ -23,11 +26,11 @@ Input:
 
 Compress using:
 ```bash
-py compress.py radio.png 64
+py compress.py radio.png --bpp 6 --random-state=42
 ```
 
 Output:
 
-[`radio-64.png`](./radio-64.png) (219 kB)
+[`radio-64.png`](./radio-64.png) (123 kB)
 
 ![radio-64.png](./radio-64.png)
