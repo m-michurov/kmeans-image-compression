@@ -18,29 +18,44 @@ def make_palette(color_space: np.ndarray) -> list[int]:
     return palette
 
 
+def compress_color_space(
+        pixels: np.ndarray,
+        target_bpp: int,
+        random_state: int | None = None
+) -> tuple[np.ndarray, np.ndarray]:
+    # noinspection PyArgumentEqualDefault
+    kmeans = MiniBatchKMeans(
+        init='k-means++',
+        n_clusters=2 ** target_bpp,
+        random_state=random_state
+    )
+    kmeans.fit(pixels)
+
+    labels = kmeans.labels_.astype('uint8') if target_bpp <= 8 else kmeans.labels_
+    color_palette = np.clip(kmeans.cluster_centers_, 0, 255).astype('uint8')
+
+    return color_palette, labels
+
+
 def quantize(
         image: Any,
         target_bpp: int,
         random_state: int | None = None
 ) -> Image.Image:
-    assert 0 < target_bpp <= 8
+    assert 0 < target_bpp <= 24
 
     pixels: np.ndarray = np.array(image)
 
     height, width, channels = pixels.shape
     pixels = pixels.reshape((height * width, channels))
 
-    # noinspection PyArgumentEqualDefault
-    kmeans = MiniBatchKMeans(
-        init='k-means++',
-        n_clusters=2**target_bpp,
-        random_state=random_state
-    )
-    kmeans.fit(pixels)
+    color_palette, labels = compress_color_space(pixels, target_bpp, random_state)
 
-    pixels = kmeans.labels_.astype('uint8')
-    result = Image.fromarray(pixels.reshape((height, width)), mode='P')
-    result.putpalette(make_palette(color_space=kmeans.cluster_centers_))
+    if target_bpp > 8:
+        return Image.fromarray(color_palette[labels].reshape((height, width, channels)), mode='RGB')
+
+    result = Image.fromarray(labels.reshape((height, width)), mode='P')
+    result.putpalette(make_palette(color_palette))
 
     return result
 
@@ -51,7 +66,7 @@ def quantize(
     '--bpp',
     required=True,
     type=int,
-    help='Must be in range [1, 8]'
+    help='Must be in range [1, 24]'
 )
 @click.option(
     '--out',
